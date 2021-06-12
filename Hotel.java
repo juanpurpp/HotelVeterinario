@@ -64,32 +64,7 @@ public class Hotel extends Application{
 	public static Scene escena_clientes;
 	public static void datosDisplay() throws Exception {
 		//Datos cliente
-		datos_window.setTitle("Datos clientes");
-
-		Button pestana1 = new Button();
-		System.out.println("Insertando CSS : "+Archivo.leer(css_pestana,false));
-
-		pestana1.getStyleClass().clear();
-		pestana1.setStyle(Archivo.leer(css_pestana,false));
-		pestana1.setText("Datos clientes");
-		pestana1.autosize();
-		pestana1.setOnAction(e->{
-			datos_window.setScene(escena_mascotas);
-		});
-		Button pestana2 = new Button();
-
-		pestana2.getStyleClass().clear();
-		pestana2.setStyle("-fx-border-width:2px 2px 2px 2px;");
-		pestana2.setText("Datos mascota");
-		pestana2.autosize();
-
-		pestana2.setOnAction(e->{
-			datos_window.setScene(escena_clientes);
-		});
-		HBox pestanas = new HBox();
-		pestanas.getChildren().addAll(pestana1,pestana2);
-		HBox.setHgrow(pestana1, Priority.ALWAYS);
-		pestanas.setAlignment(Pos.TOP_LEFT);
+		
 		TextField nombre = new TextField();
 		TextField telefono= new TextField();
 		TextField movil= new TextField();
@@ -98,6 +73,9 @@ public class Hotel extends Application{
 
 		Button guardar = new Button("Guardar");
 		Button cancelar = new Button("Cancelar");
+		cancelar.setOnAction(e->{
+			datos_window.close();
+		});
 		GridPane form = new GridPane();
 		Label txtnombre = new Label("Nombre: ");
 		Label txttelefono  = new Label("Telefono: ");
@@ -117,52 +95,89 @@ public class Hotel extends Application{
 		GridPane.setConstraints(txtdireccion,2,1);
 		form.setPadding(new Insets(5,5,5,5));
 		form.setVgap(25);
-		form.setHgap(50);
+		form.setHgap(25);
 		form.getChildren().addAll(nombre,telefono,movil,correo,direccion,txtnombre,txttelefono,txtmovil,txtcorreo,txtdireccion);
 		VBox general = new VBox();
 		HBox botones = new HBox();
 		form.setAlignment(Pos.CENTER);
 		botones.getChildren().addAll(guardar,cancelar);
 		botones.setAlignment(Pos.BOTTOM_RIGHT);
-		botones.setSpacing(10);
+		botones.setSpacing(5);
 		botones.setPadding(new Insets(5, 5,5,5));
-		general.getChildren().addAll(pestanas,form,botones);
-		VBox.setVgrow(pestanas, Priority.ALWAYS);
+		general.getChildren().addAll(form,botones);
 		VBox.setVgrow(botones,Priority.ALWAYS);
-		escena_clientes= new Scene(general,700, 250);
-		datos_window.setScene(escena_clientes);
-		datos_window.show();
-		//Datos escritorMascotas
-		pestana1.setStyle("-fx-border-width: 2px 2px 2px 2px");
-		pestana2.setStyle(Archivo.leer(css_pestana,false));
-		pestanas.getChildren().addAll(pestana1,pestana2);
-		HBox.setHgrow(pestana1, Priority.ALWAYS);
-		pestanas.setAlignment(Pos.TOP_LEFT);
 
-		TextField nombrem = new TextField();
+		TabPane tabs = new TabPane();
+		Tab tab1 = new Tab("Datos Cliente", general);
+		TextField mnombre = new TextField();
 		TextField raza = new TextField();
 		TextField especie = new TextField();
-		ChoiceBox<String> sexo = new ChoiceBox<String>();
-		sexo.getItems().addAll("Macho","Hembra");
-		Button guardar2 = new Button("Guardar");
-		form = new GridPane();
 
-	
-		//constraints
+		ChoiceBox<String> sexo= new ChoiceBox<String>();
+		sexo.getItems().addAll("Macho","Hembra");
+
+		Spinner<Integer> edad = new Spinner<Integer>();
+		SpinnerValueFactory<Integer> valores = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,99, 0);
+		edad.setValueFactory(valores);
+		Spinner<Integer> meses = new Spinner<Integer>();
+		SpinnerValueFactory<Integer> vmeses = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,11, 0);
+		meses.setValueFactory(vmeses);
+
+
+		Label txtmnombre = new Label("Nombre de la mascota: ");
+		Label txtraza = new Label("Raza: ");
+		Label txtespecie = new Label("Especie: ");
+		Label txtsexo = new Label("Sexo: "); 
+		Label txtedad = new Label("Edad: ");
+		Label txtmeses = new Label("Meses: ");
+		form = new GridPane();
+		GridPane.setConstraints(txtmnombre, 0,0);
+		GridPane.setConstraints(mnombre, 1,0);
+		GridPane.setConstraints(txtraza, 0,1);
+		GridPane.setConstraints(raza, 1,1);
+		GridPane.setConstraints(txtespecie, 2,0);
+		GridPane.setConstraints(especie, 3,0);
+		GridPane.setConstraints(txtsexo, 0,2);
+		GridPane.setConstraints(sexo, 1,2);
+		GridPane.setConstraints(txtedad, 2,1);
+		GridPane.setConstraints(edad, 3,1);
+		GridPane.setConstraints(txtmeses,2,2);
+		GridPane.setConstraints(meses, 3,2);
 		form.setPadding(new Insets(5,5,5,5));
 		form.setVgap(25);
-		form.setHgap(50);
-		form.getChildren().addAll(nombre,telefono,movil,correo,direccion,txtnombre,txttelefono,txtmovil,txtcorreo,txtdireccion);
+		form.setHgap(25);
+		form.getChildren().addAll(mnombre,raza,especie,sexo,edad,meses,txtmnombre,txtraza,txtsexo, txtespecie, txtedad,txtmeses);
+		form.setAlignment(Pos.CENTER);
+
+		Button guardar2 = new Button("Guardar");
+		Button cancelar2 = new Button("Cancelar");
+		HBox derecha = new HBox();
+		Button reservar = new Button("Reservar");
+		derecha.getChildren().addAll(reservar,guardar2, cancelar2);
+		derecha.setSpacing(5);
+		derecha.setAlignment(Pos.CENTER_RIGHT);
+		Button agregar = new Button("Agregar Mascota");
+		agregar.setAlignment(Pos.CENTER_LEFT);
+		cancelar2.setOnAction(e->{
+			datos_window.close();
+		});
 		general = new VBox();
 		botones = new HBox();
-		form.setAlignment(Pos.CENTER);
-		botones.getChildren().addAll(guardar,cancelar);
+		botones.getChildren().addAll(agregar,derecha);
 		botones.setAlignment(Pos.BOTTOM_RIGHT);
 		botones.setSpacing(10);
 		botones.setPadding(new Insets(5, 5,5,5));
-		general.getChildren().addAll(pestanas,form,botones);
-		VBox.setVgrow(pestanas, Priority.ALWAYS);
-		VBox.setVgrow(botones,Priority.ALWAYS);
-		escena_clientes= new Scene(general,700, 250);
+		HBox.setHgrow(agregar, Priority.ALWAYS);
+		HBox.setHgrow(derecha, Priority.ALWAYS);
+		general.getChildren().addAll(form,botones);
+		
+		Tab tab2 = new Tab("Datos mascota", general); 
+		tab1.setClosable(false);
+		tab2.setClosable(false);
+		tabs.getTabs().addAll(tab1,tab2);
+		datos_window.setScene(new Scene(tabs));
+		datos_window.show();
+		//Datos escritorMascotas
+
 	}
 }
