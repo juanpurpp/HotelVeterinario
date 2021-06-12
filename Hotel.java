@@ -114,7 +114,7 @@ public class Hotel extends Application{
 		TextField especie = new TextField();
 
 		ChoiceBox<String> sexo= new ChoiceBox<String>();
-		sexo.getItems().addAll("Macho","Hembra");
+		sexo.getItems().addAll("Macho","Hembra","Otro");
 
 		Spinner<Integer> edad = new Spinner<Integer>();
 		SpinnerValueFactory<Integer> valores = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,99, 0);
