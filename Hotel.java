@@ -5,10 +5,16 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.control.*;
-
 import javafx.scene.text.*;
+
+import java.time.LocalDate;
+
+import javax.security.auth.callback.Callback;
+
 import java.io.File;
+
 public class Hotel extends Application{
 	public static Stage vprincipal;
 	public static File css_pestana = Archivo.crear("CSS/pestana.txt");
@@ -94,7 +100,7 @@ public class Hotel extends Application{
 		GridPane.setConstraints(direccion,3,1);
 		GridPane.setConstraints(txtdireccion,2,1);
 		form.setPadding(new Insets(5,5,5,5));
-		form.setVgap(25);
+		form.setVgap(15);
 		form.setHgap(25);
 		form.getChildren().addAll(nombre,telefono,movil,correo,direccion,txtnombre,txttelefono,txtmovil,txtcorreo,txtdireccion);
 		VBox general = new VBox();
@@ -119,9 +125,11 @@ public class Hotel extends Application{
 		Spinner<Integer> edad = new Spinner<Integer>();
 		SpinnerValueFactory<Integer> valores = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,99, 0);
 		edad.setValueFactory(valores);
+		edad.setEditable(true);
 		Spinner<Integer> meses = new Spinner<Integer>();
 		SpinnerValueFactory<Integer> vmeses = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,11, 0);
 		meses.setValueFactory(vmeses);
+		meses.setEditable(true);
 
 
 		Label txtmnombre = new Label("Nombre de la mascota: ");
@@ -144,7 +152,7 @@ public class Hotel extends Application{
 		GridPane.setConstraints(txtmeses,2,2);
 		GridPane.setConstraints(meses, 3,2);
 		form.setPadding(new Insets(5,5,5,5));
-		form.setVgap(25);
+		form.setVgap(15);
 		form.setHgap(25);
 		form.getChildren().addAll(mnombre,raza,especie,sexo,edad,meses,txtmnombre,txtraza,txtsexo, txtespecie, txtedad,txtmeses);
 		form.setAlignment(Pos.CENTER);
@@ -153,6 +161,7 @@ public class Hotel extends Application{
 		Button cancelar2 = new Button("Cancelar");
 		HBox derecha = new HBox();
 		Button reservar = new Button("Reservar");
+		reservar.setOnAction(e-> reservarDisplay());
 		derecha.getChildren().addAll(reservar,guardar2, cancelar2);
 		derecha.setSpacing(5);
 		derecha.setAlignment(Pos.CENTER_RIGHT);
@@ -179,5 +188,88 @@ public class Hotel extends Application{
 		datos_window.show();
 		//Datos escritorMascotas
 
+	}
+	public static Stage reserva_window = new Stage();
+
+	public static void reservarDisplay(){
+		GridPane panel = new GridPane();
+		//elementos gridpane
+			VBox fechas = new VBox();
+				DatePicker desde = new DatePicker(LocalDate.now());
+				desde.setDayCellFactory(picker -> new DateCell() {
+					public void updateItem(LocalDate date, boolean empty) {
+						super.updateItem(date, empty);
+						setDisable(empty || date.compareTo(LocalDate.now()) < 0 );
+					}
+				});
+				DatePicker hasta = new DatePicker(LocalDate.now().plusDays(1));
+				hasta.setDayCellFactory(picker -> new DateCell() {
+					public void updateItem(LocalDate date, boolean empty) {
+						super.updateItem(date, empty);
+						setDisable(empty || date.compareTo(LocalDate.now().plusDays(1)) < 0 );
+					}
+				});
+				HBox desdebox = new HBox();
+					Label txtdesde = new Label("Desde:\t");
+					desdebox.getChildren().addAll(txtdesde,desde);
+				HBox hastabox = new HBox();
+					Label txthasta = new Label("Hasta:\t");
+					hastabox.getChildren().addAll(txthasta,hasta);
+				fechas.getChildren().addAll(desdebox,hastabox);
+				fechas.setSpacing(15);
+			TextArea animal_datos = new TextArea("Nombre: \nEspecie: \nRaza: \nEdad: \nSexo: ");
+			animal_datos.setEditable(false);
+			animal_datos.setMinSize(50,50);
+			animal_datos.setMaxSize(230,110);
+			animal_datos.setStyle("-fx-background-color: grey");
+			VBox ultrabox = new VBox();
+				HBox tamanobox = new HBox();
+					Label txttamano = new Label("Tamaño:\t\t");
+					ChoiceBox<String> tamano = new ChoiceBox<String>();
+					tamano.getItems().add("Muy pequeño");
+					tamano.getItems().add("Pequeño");
+					tamano.getItems().add("Mediano");
+					tamano.getItems().add("Grande");
+					tamano.getItems().add("Muy grande");
+					tamanobox.getChildren().addAll(txttamano,tamano);
+				VBox peligrobox = new VBox();
+					Label txtpeligro = new Label("Peligrosidad:\t");
+					HBox hpeligrobox = new HBox();
+						ChoiceBox<String> peligro = new ChoiceBox<String>();
+						peligro.getItems().addAll("Domestico","Peligroso");
+						CheckBox exotico = new CheckBox("Exotico");
+						exotico.setAlignment(Pos.CENTER);
+						hpeligrobox.getChildren().addAll(peligro,exotico);
+						hpeligrobox.setSpacing(10);
+					peligrobox.getChildren().addAll(txtpeligro,hpeligrobox);
+					peligrobox.setSpacing(5);
+				ultrabox.getChildren().addAll(tamanobox, peligrobox);
+				ultrabox.setSpacing(25);
+			VBox boletabox = new VBox();
+				Label txtboleta = new Label("Boleta: ");
+				TextArea boleta = new TextArea("Habitacion: \nEstancia: \nComida \nDescuento: \nTotal: ");
+				boleta.setEditable(false);
+				boleta.setMinSize(50,50);
+				boleta.setMaxSize(150,110);
+				boleta.setStyle("-fx-background-color: grey; -fx-font-family: consolas;");
+				boletabox.getChildren().addAll(txtboleta,boleta);
+				boletabox.setSpacing(5);
+			GridPane.setConstraints(animal_datos,0,0);
+			GridPane.setConstraints(fechas,0,1);
+			GridPane.setConstraints(ultrabox,1,0);
+			GridPane.setConstraints(boletabox,1,1,1,1,HPos.LEFT,VPos.BOTTOM);
+			panel.getChildren().addAll(animal_datos,fechas,ultrabox,boletabox);
+			panel.setPadding(new Insets(5,5,5,5));
+			panel.setVgap(15);
+			panel.setHgap(25);
+		HBox botones = new HBox();
+		Button reservar = new Button("Reservar");
+		botones.getChildren().addAll(reservar);
+		botones.setAlignment(Pos.BOTTOM_RIGHT);
+		VBox general = new VBox();
+		general.getChildren().addAll(panel,botones);
+		general.setPadding(new Insets(5,5,5,5));
+		reserva_window.setScene(new Scene(general));
+		reserva_window.show();
 	}
 }
