@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 public class Mascota{
 	private String nombre;
 	private String especie;
@@ -8,13 +10,32 @@ public class Mascota{
 	private String tamano;
 	private String peligrosidad;
 	private boolean exotico;
-	public Mascota(String nombre, String especie, String raza, String sexo,int edad, int meses){
+	private int id;
+	private LocalDate desde = LocalDate.now();
+	private LocalDate hasta = LocalDate.now().plusDays(1);
+	public Mascota(int id,String nombre, String especie, String raza, String sexo,int edad, int meses){
 		this.nombre = nombre;
 		this.especie = especie;
 		this.raza = raza;
 		this.sexo = sexo;
 		this.edad = edad;
 		this.meses = meses;
+		this.id = id;
+	}
+	public LocalDate getDesde(){
+		return desde;
+	}
+	public void setDesde(LocalDate desde){
+		this.desde = desde;
+	}
+	public LocalDate getHasta(){
+		return hasta;
+	}
+	public void setHasta(LocalDate hasta){
+		this.hasta = hasta;
+	}
+	public int getId(){
+		return this.id;
 	}
 	public String getSexo(){
 		return sexo;
@@ -71,12 +92,46 @@ public class Mascota{
 		this.exotico = exotico;
 	}
 	public String toString(){
-		String s = this.nombre;
-		s+= ";"+this.especie;
+		String s = ""+this.id;
+		s+=";"+this.nombre;
+		s+=";"+this.especie;
 		s+=";"+this.raza;
 		s+=";"+this.sexo;
 		s+=";"+this.edad;
 		s+=";"+this.meses;
 		return s;
+	}
+	public String calcularBoleta(){
+		int habitacion = 0;
+		if(this.peligrosidad!=null){
+			if(this.peligrosidad.equals("Domestico")) habitacion+= 5000;
+			else if(this.peligrosidad.equals("Peligroso")) habitacion+= 15000;
+		}
+		if(this.tamano!=null){
+			if(this.tamano.equals("Muy pequeño")) habitacion+= 500;
+			if(this.tamano.equals("Pequeño"))	habitacion+= 2000;
+			if(this.tamano.equals("Mediano"))	habitacion+= 5000;
+			if(this.tamano.equals("Grande"))	habitacion+= 7500;
+			if(this.tamano.equals("Muy grande")) habitacion+= 10000;
+		}
+		if(this.exotico)habitacion+=3000;
+		int estancia = 0;
+		int comida = 0;
+		int descuento = 0;
+		if(this.desde != null && this.hasta != null){
+			estancia = (int)ChronoUnit.DAYS.between(this.desde, this.hasta) * 1000;
+			comida = (int)ChronoUnit.DAYS.between(this.desde, this.hasta) * 500;
+			if(ChronoUnit.DAYS.between(this.desde, this.hasta)>7) descuento +=30;
+		}
+		int total= (habitacion+estancia+comida);
+		total-= Math.round((total/100) * descuento);
+		String boleta = "";
+		boleta+=//
+		"Habitacion:	"+habitacion+//
+		"\nEstancia:	"+estancia+//
+		"\nComida:		"+comida+//
+		"\nDescuento:	"+descuento+"%"+//
+		"\nTotal:		"+total;
+		return boleta;
 	}
 }

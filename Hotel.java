@@ -15,6 +15,9 @@ import java.io.File;
 
 public class Hotel extends Application{
 	public static Stage vprincipal;
+	public static Stage datos_window = new Stage();
+	public static Stage reserva_window = new Stage();
+
 	public static File css_pestana = Archivo.crear("CSS/pestana.txt");
 	public static Button pestana1;
 	public static Button pestana2;
@@ -63,7 +66,6 @@ public class Hotel extends Application{
 		primaryStage.show();
 		// termino ventana principal
 	}
-	public static Stage datos_window = new Stage();
 	public static Scene escena_mascotas;
 	public static Scene escena_clientes;
 	public static TextField nombre ;
@@ -173,13 +175,18 @@ public class Hotel extends Application{
 		Button guardar2 = new Button("Guardar");
 		guardar2.setOnAction(e->{
 			if(cliente == null) System.out.println("Debe guardar sus datos en la otra pestaña primero");
-			else {cliente.addMascota(new Mascota(mnombre.getText(), especie.getText(), raza.getText(),sexo.getValue(), edad.getValue(), meses.getValue()));
+			else {cliente.addMascota(new Mascota(0, mnombre.getText(), especie.getText(), raza.getText(),sexo.getValue(), edad.getValue(), meses.getValue()));
 			System.out.println(cliente.getMascotas()[0].toString());}
 		});
 		Button cancelar2 = new Button("Cancelar");
 		HBox derecha = new HBox();
 		Button reservar = new Button("Reservar");
-		reservar.setOnAction(e-> reservarDisplay());
+		reservar.setOnAction(e->{
+			if(cliente.getMascotas()[0] != null){
+				reserva_window.setScene(escenaReservar(0));
+				reserva_window.show();
+			}else System.out.println("Debe guardar la mascota primero");
+		});
 		derecha.getChildren().addAll(reservar,guardar2, cancelar2);
 		derecha.setSpacing(5);
 		derecha.setAlignment(Pos.CENTER_RIGHT);
@@ -207,25 +214,39 @@ public class Hotel extends Application{
 		//Datos escritorMascotas
 
 	}
-	public static Stage reserva_window = new Stage();
-
-	public static void reservarDisplay(){
+	public static DatePicker desde;
+	public static DatePicker hasta;
+	public static ChoiceBox<String> tamano;
+	public static ChoiceBox<String> peligro;
+	public static CheckBox exotico;
+	public static Scene escenaReservar(int id){
+		Mascota mascota = cliente.getMascotas()[id];
 		GridPane panel = new GridPane();
 		//elementos gridpane
 			VBox fechas = new VBox();
-				DatePicker desde = new DatePicker(LocalDate.now());
+				desde = new DatePicker(mascota.getDesde());
 				desde.setDayCellFactory(picker -> new DateCell() {
 					public void updateItem(LocalDate date, boolean empty) {
 						super.updateItem(date, empty);
-						setDisable(empty || date.compareTo(LocalDate.now()) < 0 );
+						setDisable(empty || (date.compareTo(LocalDate.now()) < 0 || date.compareTo(hasta.getValue().minusDays(1)) > 0 ));
 					}
 				});
-				DatePicker hasta = new DatePicker(LocalDate.now().plusDays(1));
+				desde.setOnAction(e->{
+					mascota.setDesde(desde.getValue());
+					cliente.setMascota(id,mascota);
+					reserva_window.setScene(escenaReservar(id));
+				});
+				hasta= new DatePicker(mascota.getHasta());
 				hasta.setDayCellFactory(picker -> new DateCell() {
 					public void updateItem(LocalDate date, boolean empty) {
 						super.updateItem(date, empty);
 						setDisable(empty || date.compareTo(LocalDate.now().plusDays(1)) < 0 );
 					}
+				});
+				hasta.setOnAction(e->{
+					mascota.setHasta(hasta.getValue());
+					cliente.setMascota(id,mascota);
+					reserva_window.setScene(escenaReservar(id));
 				});
 				HBox desdebox = new HBox();
 					Label txtdesde = new Label("Desde:\t");
@@ -235,7 +256,13 @@ public class Hotel extends Application{
 					hastabox.getChildren().addAll(txthasta,hasta);
 				fechas.getChildren().addAll(desdebox,hastabox);
 				fechas.setSpacing(15);
-			TextArea animal_datos = new TextArea("Nombre: \nEspecie: \nRaza: \nEdad: \nSexo: ");
+			TextArea animal_datos = new TextArea(//
+			"Nombre:	"+mascota.getNombre()+//
+			"\nEspecie:	"+mascota.getEspecie()+//
+			"\nRaza:	"+mascota.getRaza()+//
+			"\nEdad:	"+mascota.getEdad() + " años "+//
+			"y "+mascota.getMeses() + " meses"+//
+			"\nSexo:	"+mascota.getSexo());
 			animal_datos.setEditable(false);
 			animal_datos.setMinSize(50,50);
 			animal_datos.setMaxSize(230,110);
@@ -243,19 +270,37 @@ public class Hotel extends Application{
 			VBox ultrabox = new VBox();
 				HBox tamanobox = new HBox();
 					Label txttamano = new Label("Tamaño:\t\t");
-					ChoiceBox<String> tamano = new ChoiceBox<String>();
+					tamano = new ChoiceBox<String>();
+					tamano.setValue(mascota.getTamano());
 					tamano.getItems().add("Muy pequeño");
 					tamano.getItems().add("Pequeño");
 					tamano.getItems().add("Mediano");
 					tamano.getItems().add("Grande");
 					tamano.getItems().add("Muy grande");
+					tamano.setOnAction(e->{
+						mascota.setTamano(tamano.getValue());
+						cliente.setMascota(id,mascota);
+						reserva_window.setScene(escenaReservar(id));
+					});
 					tamanobox.getChildren().addAll(txttamano,tamano);
 				VBox peligrobox = new VBox();
 					Label txtpeligro = new Label("Peligrosidad:\t");
 					HBox hpeligrobox = new HBox();
-						ChoiceBox<String> peligro = new ChoiceBox<String>();
+						peligro = new ChoiceBox<String>();
+						peligro.setValue(mascota.getPeligrosidad());
 						peligro.getItems().addAll("Domestico","Peligroso");
-						CheckBox exotico = new CheckBox("Exotico");
+						peligro.setOnAction(e->{
+							mascota.setPeligrosidad(peligro.getValue());
+							cliente.setMascota(id,mascota);
+							reserva_window.setScene(escenaReservar(id));
+						});
+						exotico = new CheckBox("Exotico");
+						exotico.setSelected(mascota.getExotico());
+						exotico.setOnAction(e->{
+							mascota.setExotico(exotico.isSelected());
+							cliente.setMascota(id,mascota);
+							reserva_window.setScene(escenaReservar(id));
+						});
 						exotico.setAlignment(Pos.CENTER);
 						hpeligrobox.getChildren().addAll(peligro,exotico);
 						hpeligrobox.setSpacing(10);
@@ -265,7 +310,7 @@ public class Hotel extends Application{
 				ultrabox.setSpacing(25);
 			VBox boletabox = new VBox();
 				Label txtboleta = new Label("Boleta: ");
-				TextArea boleta = new TextArea("Habitacion: \nEstancia: \nComida \nDescuento: \nTotal: ");
+				TextArea boleta = new TextArea(mascota.calcularBoleta());
 				boleta.setEditable(false);
 				boleta.setMinSize(50,50);
 				boleta.setMaxSize(150,110);
@@ -282,12 +327,13 @@ public class Hotel extends Application{
 			panel.setHgap(25);
 		HBox botones = new HBox();
 		Button reservar = new Button("Reservar");
+		reservar.setOnAction(e->{		
+		});
 		botones.getChildren().addAll(reservar);
 		botones.setAlignment(Pos.BOTTOM_RIGHT);
 		VBox general = new VBox();
 		general.getChildren().addAll(panel,botones);
 		general.setPadding(new Insets(5,5,5,5));
-		reserva_window.setScene(new Scene(general));
-		reserva_window.show();
+		return new Scene(general);
 	}
 }
