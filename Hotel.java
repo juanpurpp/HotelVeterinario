@@ -11,8 +11,6 @@ import javafx.scene.text.*;
 
 import java.time.LocalDate;
 
-import javax.security.auth.callback.Callback;
-
 import java.io.File;
 
 public class Hotel extends Application{
@@ -68,16 +66,31 @@ public class Hotel extends Application{
 	public static Stage datos_window = new Stage();
 	public static Scene escena_mascotas;
 	public static Scene escena_clientes;
+	public static TextField nombre ;
+	public static TextField telefono;
+	public static TextField movil;
+	public static TextField correo;
+	public static TextField direccion;
+	public static Cliente cliente;
+	public static TextField mnombre;
+	public static TextField raza;
+	public static TextField especie;
+	public static ChoiceBox<String> sexo;
+	public static Spinner<Integer> edad;
+	public static Spinner<Integer> meses;
 	public static void datosDisplay() throws Exception {
 		//Datos cliente
-		
-		TextField nombre = new TextField();
-		TextField telefono= new TextField();
-		TextField movil= new TextField();
-		TextField correo= new TextField();
-		TextField direccion= new TextField();
+		nombre = new TextField();
+		telefono= new TextField();
+		movil= new TextField();
+		correo= new TextField();
+		direccion= new TextField();
 
 		Button guardar = new Button("Guardar");
+		guardar.setOnAction(e->{
+			cliente = new Cliente(nombre.getText(),telefono.getText(),movil.getText(),correo.getText(),direccion.getText());
+			System.out.println(cliente.toString());
+		});
 		Button cancelar = new Button("Cancelar");
 		cancelar.setOnAction(e->{
 			datos_window.close();
@@ -115,18 +128,18 @@ public class Hotel extends Application{
 
 		TabPane tabs = new TabPane();
 		Tab tab1 = new Tab("Datos Cliente", general);
-		TextField mnombre = new TextField();
-		TextField raza = new TextField();
-		TextField especie = new TextField();
+		mnombre = new TextField();
+		raza = new TextField();
+		especie = new TextField();
 
-		ChoiceBox<String> sexo= new ChoiceBox<String>();
+		sexo= new ChoiceBox<String>();
 		sexo.getItems().addAll("Macho","Hembra","Otro");
 
-		Spinner<Integer> edad = new Spinner<Integer>();
+		edad = new Spinner<Integer>();
 		SpinnerValueFactory<Integer> valores = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,99, 0);
 		edad.setValueFactory(valores);
 		edad.setEditable(true);
-		Spinner<Integer> meses = new Spinner<Integer>();
+		meses = new Spinner<Integer>();
 		SpinnerValueFactory<Integer> vmeses = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,11, 0);
 		meses.setValueFactory(vmeses);
 		meses.setEditable(true);
@@ -158,6 +171,11 @@ public class Hotel extends Application{
 		form.setAlignment(Pos.CENTER);
 
 		Button guardar2 = new Button("Guardar");
+		guardar2.setOnAction(e->{
+			if(cliente == null) System.out.println("Debe guardar sus datos en la otra pestaña primero");
+			else {cliente.addMascota(new Mascota(mnombre.getText(), especie.getText(), raza.getText(),sexo.getValue(), edad.getValue(), meses.getValue()));
+			System.out.println(cliente.getMascotas()[0].toString());}
+		});
 		Button cancelar2 = new Button("Cancelar");
 		HBox derecha = new HBox();
 		Button reservar = new Button("Reservar");
