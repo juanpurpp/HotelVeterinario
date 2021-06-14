@@ -43,9 +43,9 @@ public class Archivo{
     }
 	public static void escribir(File archivo, String add){
 		try{
-			FileWriter escritorMascotas = new FileWriter(archivo,true);
-			escritorMascotas.append(add);
-			escritorMascotas.close();
+			FileWriter escritor = new FileWriter(archivo,true);
+			escritor.append(add);
+			escritor.close();
 			System.out.println("ha terminado de escribir " + archivo.getName());
 		}catch(Exception e){
 			System.out.println("Error escribiendo datos en "+ archivo.getName());       

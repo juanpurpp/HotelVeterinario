@@ -13,6 +13,7 @@ public class Mascota{
 	private int id;
 	private LocalDate desde = LocalDate.now();
 	private LocalDate hasta = LocalDate.now().plusDays(1);
+	private int totalfinal;
 	public Mascota(int id,String nombre, String especie, String raza, String sexo,int edad, int meses){
 		this.nombre = nombre;
 		this.especie = especie;
@@ -99,9 +100,15 @@ public class Mascota{
 		s+=";"+this.sexo;
 		s+=";"+this.edad;
 		s+=";"+this.meses;
+		s+=";"+this.desde;
+		s+=";"+this.hasta;
+		s+=";"+this.tamano;
+		s+=";"+this.peligrosidad;
+		s+=";"+this.exotico;
+		s+=";"+this.totalfinal;
 		return s;
 	}
-	public String calcularBoleta(){
+	public String calcularBoleta(int descuentoinicial){
 		int habitacion = 0;
 		if(this.peligrosidad!=null){
 			if(this.peligrosidad.equals("Domestico")) habitacion+= 5000;
@@ -117,7 +124,7 @@ public class Mascota{
 		if(this.exotico)habitacion+=3000;
 		int estancia = 0;
 		int comida = 0;
-		int descuento = 0;
+		int descuento = descuentoinicial;
 		if(this.desde != null && this.hasta != null){
 			estancia = (int)ChronoUnit.DAYS.between(this.desde, this.hasta) * 1000;
 			comida = (int)ChronoUnit.DAYS.between(this.desde, this.hasta) * 500;
@@ -132,6 +139,7 @@ public class Mascota{
 		"\nComida:		"+comida+//
 		"\nDescuento:	"+descuento+"%"+//
 		"\nTotal:		"+total;
+		this.totalfinal=total;
 		return boleta;
 	}
 }

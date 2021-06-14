@@ -10,8 +10,8 @@ import javafx.scene.control.*;
 import javafx.scene.text.*;
 
 import java.time.LocalDate;
-
 import java.io.File;
+
 
 public class Hotel extends Application{
 	public static Stage vprincipal;
@@ -19,6 +19,7 @@ public class Hotel extends Application{
 	public static Stage reserva_window = new Stage();
 
 	public static File css_pestana = Archivo.crear("CSS/pestana.txt");
+	public static File reservas = Archivo.crear("Datos/reservas.txt");
 	public static Button pestana1;
 	public static Button pestana2;
 	public static void main(String[] args){
@@ -310,7 +311,9 @@ public class Hotel extends Application{
 				ultrabox.setSpacing(25);
 			VBox boletabox = new VBox();
 				Label txtboleta = new Label("Boleta: ");
-				TextArea boleta = new TextArea(mascota.calcularBoleta());
+				TextArea boleta;
+				if(cliente.getMascotas().length>1) boleta = new TextArea(mascota.calcularBoleta(40));
+				else boleta = new TextArea(mascota.calcularBoleta(0));
 				boleta.setEditable(false);
 				boleta.setMinSize(50,50);
 				boleta.setMaxSize(150,110);
@@ -327,7 +330,9 @@ public class Hotel extends Application{
 			panel.setHgap(25);
 		HBox botones = new HBox();
 		Button reservar = new Button("Reservar");
-		reservar.setOnAction(e->{		
+		reservar.setOnAction(e->{
+			String reservacion = cliente.toString()+"~"+cliente.getMascotas()[id].toString()+"\n";
+			Archivo.escribir(reservas, reservacion);	
 		});
 		botones.getChildren().addAll(reservar);
 		botones.setAlignment(Pos.BOTTOM_RIGHT);

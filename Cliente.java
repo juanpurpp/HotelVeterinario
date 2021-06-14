@@ -13,9 +13,6 @@ public class Cliente{
 		this.correo = correo;
 		this.direccion = direccion;
 	}
-	public int getCantMascotas(){
-		return this.mascotas.length;
-	}
 	public void setMascotas(Mascota[] mascotas){
 		this.mascotas = new Mascota[mascotas.length];
 	}
