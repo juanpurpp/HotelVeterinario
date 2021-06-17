@@ -1,0 +1,11 @@
+happy;55555;76767676;happy@gmail.com;zorras #43~0;kemchi;extraterresete;pudul;Hembra;7;0;2021-06-18;2021-07-03;Grande;Domestico;true;26600
+carlos;554333;76767676767;carlos@gmail.com;nosexd #43~1;xde;gato;albin;Hembra;5;4;2021-06-18;2021-07-02;Muy peque�o;Domestico;true;20650
+carlos;554333;76767676767;carlos@gmail.com;nosexd #43~0;sarcofago;caballo;homosexual de las montanas;Macho;5;4;2021-06-17;2021-07-10;Peque�o;Peligroso;true;38150
+bill gates;544334;67777;billgates@micorosoft;estados unidos~0;Dinosaurio;tiranosauriorex;grande;Macho;5;3;2021-06-17;2114-07-08;Muy grande;Peligroso;true;35707000
+jose;554444;7777767;jose@nose.com;xd4433~0;gasspy;perro;galgo;Macho;4;2;2021-06-17;2021-07-03;Peque�o;Domestico;true;23800
+jose;554444;7777767;jose@nose.com;xd4433~1;happy;elhappy;happypazo;Otro;5;4;2021-06-17;2021-07-03;Peque�o;Peligroso;true;30800
+jilbereto;444433;56666;jilberto@outlook.com;ula #23~2;carl sagan;cientifico;fisico;Macho;87;3;2021-06-18;2021-07-11;Mediano;Domestico;true;33250
+Leo rey;54545;6666666;leorey@gmail.com;la noche #43~0;perrito;perro;pudul;Otro;99;11;2021-06-17;2021-07-10;Peque�o;Domestico;true;31150
+xd;d;xd;xd;xd~1;dxdxdx;xd;xd;Macho;50;7;2021-06-17;2021-07-02;null;null;false;15750
+xd;d;xd;xd;xd~1;dxdxdx;xd;xd;Macho;50;7;2021-06-17;2021-07-02;Peque�o;Peligroso;false;27650
+xd;d;xd;xd;xd~0;lololo;lolol;xdxddx;Macho;5;7;2021-06-17;2021-07-09;Peque�o;Peligroso;true;37100

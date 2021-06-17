@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.text.*;
 
 import java.time.LocalDate;
@@ -51,6 +52,7 @@ public class Hotel extends Application{
 	}
 	@Override
 	public void start(Stage primaryStage) throws Exception{
+		primaryStage.getIcons().add(new Image("file:Imagenes/icon.png"));
 		vprincipal = primaryStage;
 		VBox box = new VBox();
 		Label titulo = new Label("Hotel Veterinario");
@@ -110,6 +112,7 @@ public class Hotel extends Application{
 			HBox botones = new HBox();
 				Button ok = new Button("Okey");
 				Button cancelar = new Button("Cancelar");
+				cancelar.setOnAction(e-> ver_window.close());
 				botones.getChildren().addAll(ok,cancelar);
 				botones.setSpacing(5);
 				botones.setAlignment(Pos.BOTTOM_RIGHT);
@@ -154,7 +157,7 @@ public class Hotel extends Application{
 					c15.setCellValueFactory(new PropertyValueFactory<>("exotico"));
 					
 
-					tabla.getColumns().addAll(c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15);
+					tabla.getColumns().addAll(c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16,c17);
 					Scanner sacar = new Scanner(Archivo.leer(reservas, true));
 					int lineas = 0;
 					while(sacar.hasNextLine()){
@@ -170,7 +173,7 @@ public class Hotel extends Application{
 				Label txteliminarlinea = new Label("Ingrese la linea que desea eliminar: ");
 				HBox eliminarlinea = new HBox();
 					Spinner<Integer> lineaborrar = new Spinner<Integer>();
-					SpinnerValueFactory valores = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, lineas,0);
+					SpinnerValueFactory valores = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, lineas-1,0);
 					lineaborrar.setValueFactory(valores);
 					Button eliminar = new Button("Eliminar linea");
 						eliminar.setOnAction(e->{
@@ -206,19 +209,6 @@ public class Hotel extends Application{
 						Archivo.crear("Datos/reservas.txt");
 						ver_window.setScene(escenaVer());
 					});
-				/*
-				GridPane.setConstraints(tabla,0,0,1,6);
-				GridPane.setConstraints(txteliminarlinea,1,0,1,1,HPos.LEFT, VPos.BOTTOM);
-				GridPane.setConstraints(lineaborrar,1,1);
-				GridPane.setConstraints(txtlimpiar,1,2,1,1,HPos.LEFT, VPos.BOTTOM);
-				GridPane.setConstraints(limpiar,1,3);
-				GridPane.setConstraints(txtborrar,1,4,1,1,HPos.LEFT, VPos.BOTTOM);
-				GridPane.setConstraints(borrar,1,5);
-				grid.setPadding(new Insets(10,10,10,10));
-				grid.setHgap(50);
-				grid.setHgap(50);
-				*/
-				//grid.getChildren().addAll(tabla,txteliminarlinea,lineaborrar,txtlimpiar,limpiar,txtborrar,borrar);
 			VBox opciones = new VBox();
 				VBox caja1 = new VBox();
 				caja1.getChildren().addAll(txteliminarlinea,eliminarlinea);
@@ -349,7 +339,7 @@ public class Hotel extends Application{
 			form2.setPadding(new Insets(5,5,5,5));
 			form2.setVgap(15);
 			form2.setHgap(25);
-			form2.getChildren().addAll(mnombre,raza,especie,sexo,edad,meses,txtmnombre,txtraza,txtsexo, txtespecie, txtedad,txtmeses);
+			form2.getChildren().addAll(mnombre,especie,raza,sexo,edad,meses,txtmnombre,txtraza,txtsexo, txtespecie, txtedad,txtmeses);
 			form2.setAlignment(Pos.CENTER);
 
 			Button guardar2 = new Button("Guardar");
@@ -530,8 +520,8 @@ public class Hotel extends Application{
 			VBox boletabox = new VBox();
 				Label txtboleta = new Label("Boleta: ");
 				TextArea boleta;
-				if(cliente.getMascotas().length>1) boleta = new TextArea(mascota.calcularBoleta(40));
-				else boleta = new TextArea(mascota.calcularBoleta(0));
+				if(cliente.getMascotas().length==1) boleta = new TextArea(mascota.calcularBoleta(0));
+				else boleta = new TextArea(mascota.calcularBoleta(40));
 				boleta.setEditable(false);
 				boleta.setMinSize(50,50);
 				boleta.setMaxSize(150,110);
