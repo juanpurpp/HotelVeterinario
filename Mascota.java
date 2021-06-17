@@ -14,6 +14,22 @@ public class Mascota{
 	private LocalDate desde = LocalDate.now();
 	private LocalDate hasta = LocalDate.now().plusDays(1);
 	private int totalfinal;
+	public Mascota(int id,String nombre, String especie, String raza, String sexo,int edad, int meses,LocalDate desde, LocalDate hasta,String tamano, String peligrosidad, boolean exotico, int totalfinal){
+		this.nombre = nombre;
+		this.especie = especie;
+		this.raza = raza;
+		this.sexo = sexo;
+		this.edad = edad;
+		this.meses = meses;
+		this.id = id;
+		this.desde = desde;
+		this.hasta = hasta;
+		this.tamano = tamano;
+		this.peligrosidad = peligrosidad;
+		this.exotico = exotico;
+		this.totalfinal = totalfinal;
+
+	}
 	public Mascota(int id,String nombre, String especie, String raza, String sexo,int edad, int meses){
 		this.nombre = nombre;
 		this.especie = especie;
@@ -21,6 +37,15 @@ public class Mascota{
 		this.sexo = sexo;
 		this.edad = edad;
 		this.meses = meses;
+		this.id = id;
+	}
+	public Mascota(int id){
+		this.nombre = "";
+		this.especie = "";
+		this.raza = "";
+		this.sexo = "";
+		this.edad = 0;
+		this.meses = 0;
 		this.id = id;
 	}
 	public LocalDate getDesde(){

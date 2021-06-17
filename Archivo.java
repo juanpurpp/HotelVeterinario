@@ -30,8 +30,8 @@ public class Archivo{
         }
         return archivo;
     }
-    public static File eleminar(String nombre){
-        File archivo = new File("Clinica/datos/"+ nombre +".txt");;
+    public static File eleminar(File eliminar){
+        File archivo = eliminar;
         try{
             if(archivo.delete())System.out.println("Archivo eleminado " + archivo.getName());
             else System.out.println("El archivo no existe");
@@ -50,5 +50,15 @@ public class Archivo{
 		}catch(Exception e){
 			System.out.println("Error escribiendo datos en "+ archivo.getName());       
 		}
-	} 
+	}
+    public static void sobreescribir(File archivo, String add){
+		try{
+			FileWriter escritor = new FileWriter(archivo,false);
+			escritor.append(add);
+			escritor.close();
+			System.out.println("ha terminado de escribir " + archivo.getName());
+		}catch(Exception e){
+			System.out.println("Error escribiendo datos en "+ archivo.getName());       
+		}
+    }
 }

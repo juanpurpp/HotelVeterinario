@@ -26,7 +26,14 @@ public class Cliente{
 			this.mascotas[this.mascotas.length-1] = mascota;
 		}
 	}
+	public int encontrarMascota(int id){
+		int cont = 0;
+		if(this.mascotas == null) return -1;
+		for(int i = 0; i <this.mascotas.length;i++) if( this.mascotas[i].getId() == id) return cont;
+		return -1;
+	}
 	public Mascota[] getMascotas(){
+		if(this.mascotas == null) return new Mascota[0];
 		return this.mascotas;
 	}
 	public void setMascota(int id,Mascota mascota){
