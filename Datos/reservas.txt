@@ -1,0 +1,4 @@
+Juan Sandoval;No especifica;+569444448;Correojuan@gmail.com;direccionopcional #545~0;nombremascota1;especie uno;razam uno;Macho;99;0;2021-06-24;2022-08-07;Grande;Peligroso;false;445200
+Juan Sandoval;No especifica;+569444448;Correojuan@gmail.com;direccionopcional #545~1;nm2;espe dos;raza dos;Hembra;0;11;2021-06-21;2021-06-24;Peque�o;Peligroso;true;24500
+clientito;+556666;No especifica;correit@hotmail.com;No especifica~1;agregada;especieagregado;razita;Hembra;8;4;2021-06-21;2021-07-03;Muy peque�o;Domestico;true;18550
+Clientote xd;No especifica;+5999999999999999;correote@gmail.com;dirreccionota~0;mascotota;especiota;razota;Otro;99;11;2021-06-25;2021-07-10;Muy grande;Peligroso;true;35350
