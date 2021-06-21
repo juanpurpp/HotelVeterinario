@@ -7,9 +7,9 @@ public class Mascota{
 	private String sexo;
 	private int edad;
 	private int meses;
-	private String tamano;
-	private String peligrosidad;
-	private boolean exotico;
+	private String tamano = "Muy pequeño";
+	private String peligrosidad = "Domestico";
+	private boolean exotico = false;
 	private int id;
 	private LocalDate desde = LocalDate.now();
 	private LocalDate hasta = LocalDate.now().plusDays(1);

@@ -96,7 +96,7 @@ public class Hotel extends Application{
 				ver_window.show();
 			}catch(Exception e1){
 				e1.printStackTrace();
-				System.out.println("esta wea da problema");
+				System.out.println("error, causa: "+e1.getCause() + "\t Clase: "+e1.getClass()+"\nMensaje"+e1.getMessage());
 			}
 		});
 		box.getChildren().addAll(titulo,panel);
@@ -116,7 +116,6 @@ public class Hotel extends Application{
 				botones.getChildren().addAll(ok,cancelar);
 				botones.setSpacing(5);
 				botones.setAlignment(Pos.BOTTOM_RIGHT);
-			GridPane grid = new GridPane();
 				TableView tabla = new TableView();
 					TableColumn<Reserva,Object> c0 = new TableColumn<>("Linea");
 					c0.setCellValueFactory(new PropertyValueFactory<>("linea"));
@@ -155,25 +154,26 @@ public class Hotel extends Application{
 					c14.setCellValueFactory(new PropertyValueFactory<>("peligrosidad"));
 					TableColumn<Reserva, Object> c15 = new TableColumn<>("Es exotico");
 					c15.setCellValueFactory(new PropertyValueFactory<>("exotico"));
-					
 
 					tabla.getColumns().addAll(c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16,c17);
+					
 					Scanner sacar = new Scanner(Archivo.leer(reservas, true));
 					int lineas = 0;
-					while(sacar.hasNextLine()){
-						String[] info = sacar.nextLine().split("~");
-						String[] infoc= info[0].split(";");
-						String[] infom= info[1].split(";");
-						tabla.getItems().add(new Reserva(lineas,infoc[0], infoc[1], infoc[2], infoc[3],infoc[4],Integer.parseInt(infom[0]), infom[1], infom[2], infom[3],infom[4],Integer.parseInt(infom[5]), Integer.parseInt(infom[6]), LocalDate.parse(infom[7]), LocalDate.parse(infom[8]), infom[9],infom[10], Boolean.parseBoolean(infom[11]), Integer.parseInt(infom[12]) ));
-						lineas++;
-					}
+						while(!Archivo.leer(reservas, true).equals("") && sacar.hasNextLine()){
+							String[] info = sacar.nextLine().split("~");
+							String[] infoc= info[0].split(";");
+							String[] infom= info[1].split(";");
+							tabla.getItems().add(new Reserva(lineas,infoc[0], infoc[1], infoc[2], infoc[3],infoc[4],Integer.parseInt(infom[0]), infom[1], infom[2], infom[3],infom[4],Integer.parseInt(infom[5]), Integer.parseInt(infom[6]), LocalDate.parse(infom[7]), LocalDate.parse(infom[8]), infom[9],infom[10], Boolean.parseBoolean(infom[11]), Integer.parseInt(infom[12]) ));
+							lineas++;
+						}
 					sacar.close();
+					
 					tabla.setMaxSize(500,400);
-				
+					
 				Label txteliminarlinea = new Label("Ingrese la linea que desea eliminar: ");
 				HBox eliminarlinea = new HBox();
 					Spinner<Integer> lineaborrar = new Spinner<Integer>();
-					SpinnerValueFactory valores = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, lineas-1,0);
+					SpinnerValueFactory valores = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, lineas,0);
 					lineaborrar.setValueFactory(valores);
 					Button eliminar = new Button("Eliminar linea");
 						eliminar.setOnAction(e->{
@@ -190,6 +190,7 @@ public class Hotel extends Application{
 							ver_window.setScene(escenaVer());
 							leyendo.close();
 						});
+
 					eliminarlinea.getChildren().addAll(lineaborrar,eliminar);
 				Label txtlimpiar = new Label("Presione el boton para limpiar el texto");
 				Button limpiar = new Button("Limpiar");
@@ -200,8 +201,10 @@ public class Hotel extends Application{
 				Label txtborrar = new Label("Presione el boton de abajo para borrar el archivo");
 				Button borrar = new Button("Borrar");
 					borrar.setOnAction(e->{
-						Archivo.eleminar(reservas);
-						ver_window.setScene(escenaVer());
+						if(Alert.display("Confirmacion", "øDesea borrar el archivo de reservas?","Si","No")){
+							Archivo.eleminar(reservas);
+							ver_window.setScene(escenaVer());
+						}
 					});
 				Label txtcrear = new Label("Crear un archivo nuevo");
 				Button crear = new Button("Crear");
@@ -245,8 +248,15 @@ public class Hotel extends Application{
 		direccion= new TextField();
 		Button guardar = new Button("Guardar");
 		guardar.setOnAction(e->{
-			cliente = new Cliente(nombre.getText(),telefono.getText(),movil.getText(),correo.getText(),direccion.getText());
-			System.out.println(cliente.toString());
+			if(Datos.comprobar(new Cliente(nombre.getText(),telefono.getText(),movil.getText(),correo.getText(),direccion.getText()))){
+				Alert.display("Guardado", "Datos guardados","Ok");
+				cliente = new Cliente(nombre.getText(),telefono.getText(),movil.getText(),correo.getText(),direccion.getText());
+				if(telefono.getText().equals("")) cliente.setFijo("No especifica");
+				if(movil.getText().equals("")) cliente.setMovil("No especifica");
+				if(direccion.getText().equals("")) cliente.setDireccion("No especifica");
+				System.out.println(cliente.toString());
+			}
+			else Alert.display("Error", Datos.razon, "Ok");
 		});
 		Button cancelar = new Button("Cancelar");
 		cancelar.setOnAction(e->{
@@ -254,11 +264,15 @@ public class Hotel extends Application{
 		});
 		GridPane form = new GridPane();
 		Label txtnombre = new Label("Nombre: ");
-		Label txttelefono  = new Label("Telefono: ");
+		Label txttelefono  = new Label("Telefono Fijo: ");
 		Label txtmovil = new Label("Telefono Movil: ");
 		Label txtcorreo = new Label("Correo electronico:");
 		Label txtdireccion = new Label("Direccion: ");
-	
+		nombre.setPromptText("Ingrese su nombre");
+		telefono.setPromptText("Ingrese un numero de telefono fijo");
+		movil.setPromptText("Ingrese un numero de telfono movil");
+		correo.setPromptText("correo@dominio");
+		direccion.setPromptText("opcional");
 		GridPane.setConstraints(nombre,1,0);
 		GridPane.setConstraints(txtnombre,0,0);
 		GridPane.setConstraints(telefono,1,1);
@@ -345,7 +359,7 @@ public class Hotel extends Application{
 			Button guardar2 = new Button("Guardar");
 			guardar2.setOnAction(e->{
 				if(cliente == null) System.out.println("Debe guardar sus datos en la otra pestaùa primero");
-				else{
+				else if(Datos.comprobar(new Mascota(pageIndex, mnombre.getText(), especie.getText(), raza.getText(),sexo.getValue(), edad.getValue(), meses.getValue()))){
 					int cont=0;
 					for(Mascota revisando:cliente.getMascotas()){ 
 						if(cont == cliente.getMascotas().length-1) cliente.addMascota(new Mascota(pageIndex, mnombre.getText(), especie.getText(), raza.getText(),sexo.getValue(), edad.getValue(), meses.getValue())); 
@@ -356,7 +370,9 @@ public class Hotel extends Application{
 					}
 					if (cont == 0)   cliente.addMascota(new Mascota(pageIndex, mnombre.getText(), especie.getText(), raza.getText(),sexo.getValue(), edad.getValue(), meses.getValue())); 
 					System.out.println("se guardo "+ cliente.getMascotas()[cont]);
-				}
+					Alert.display("Guardado", "La mascota "+ cliente.getMascotas()[cont].getNombre()+" se guardo correctamente","Ok");
+				}		
+				else Alert.display("Error", Datos.razon, "Ok");
 			});
 			Button cancelar2 = new Button("Cancelar");
 			HBox derecha = new HBox();
