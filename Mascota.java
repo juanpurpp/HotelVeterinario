@@ -7,7 +7,7 @@ public class Mascota{
 	private String sexo;
 	private int edad;
 	private int meses;
-	private String tamano = "Muy pequeño";
+	private String tamano = "Muy pequeno";
 	private String peligrosidad = "Domestico";
 	private boolean exotico = false;
 	private int id;

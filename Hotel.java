@@ -4,11 +4,14 @@ import javafx.geometry.Insets;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.text.*;
 
 import java.time.LocalDate;
@@ -41,9 +44,11 @@ public class Hotel extends Application{
 	public static Stage datos_window = new Stage();
 	public static Stage reserva_window = new Stage();
 	public static Stage ver_window = new Stage();
+	public static Stage disp_window = new Stage();
 
 	public static File css_pestana = Archivo.crear("CSS/pestana.txt");
 	public static File reservas = Archivo.crear("Datos/reservas.txt");
+	public static File habitaciones = Archivo.crear("Datos/habitaciones.txt");
 	public static Button pestana1;
 	public static Button pestana2;
 	public static void main(String[] args){
@@ -55,6 +60,7 @@ public class Hotel extends Application{
 		datos_window.setResizable(false);
 		reserva_window.setResizable(false);
 		ver_window.setResizable(false);
+		disp_window.setResizable(false);
 		primaryStage.getIcons().add(new Image("file:Imagenes/icon.png"));
 		vprincipal = primaryStage;
 		VBox box = new VBox();
@@ -70,15 +76,22 @@ public class Hotel extends Application{
 			botonesp.getChildren().addAll(b1,b2);
 			botonesp.minWidth(400);
 			botonesp.setSpacing(10);
-			Button b3 = new Button("Elemento medio");
-			Button b4 = new Button("Elemento derecha");
+			Button b3 = new Button("Editar disponibilidad de habitaciones");
+			Image relax = new Image("Imagenes/relax.jpg",275,250,false,true);
+			DropShadow ds = new DropShadow();
+			ds.setOffsetY(1.0);
+			ds.setOffsetX(0.5);
+			ds.setColor(Color.GRAY);
+			ImageView verrelax= new ImageView(relax);
+			verrelax.setEffect(ds);
 			GridPane.setConstraints(botonesp, 0,0);
 			GridPane.setConstraints(b3, 1,0);
-			GridPane.setConstraints(b4, 2,0);
 			GridPane.setHalignment(botonesp, HPos.LEFT);
 			GridPane.setHgrow(botonesp,Priority.ALWAYS);
 			panel.setAlignment(Pos.TOP_CENTER);
-			panel.getChildren().addAll(botonesp,b3,b4);
+			panel.getChildren().addAll(botonesp,b3);
+		HBox finalbox = new HBox();
+		finalbox.getChildren().addAll(panel, verrelax);
 		b1.setOnAction(e-> {
 			try{
 				if(reservas.exists()){
@@ -106,7 +119,7 @@ public class Hotel extends Application{
 				System.out.println("esta wea da problema");
 			}
 		} );
-		b2.setOnAction(e->{
+		b2.setOnAction(e->{ // ver reservas hechas
 			try{
 				ver_window.setScene(escenaVer());
 				ver_window.show();
@@ -115,13 +128,149 @@ public class Hotel extends Application{
 				System.out.println("error, causa: "+e1.getCause() + "\t Clase: "+e1.getClass()+"\nMensaje"+e1.getMessage());
 			}
 		});
-		box.getChildren().addAll(titulo,panel);
+		b3.setOnAction(e->{
+			try{
+				disp_window.setScene(escenaDisp());
+				disp_window.show();
+			}catch(Exception e1){
+				e1.printStackTrace();
+				System.out.println("error, causa: "+e1.getCause() + "\t Clase: "+e1.getClass()+"\nMensaje"+e1.getMessage());
+			}
+		});
+		box.getChildren().addAll(titulo,finalbox);
 		box.setAlignment(Pos.TOP_CENTER);
-		Scene escena = new Scene(box,854,480);
+		Scene escena = new Scene(box);
 		primaryStage.setScene(escena);
 		primaryStage.setTitle("Hotel Veterinario");
 		primaryStage.show();
 		// termino ventana principal
+	}
+	public static Habitacion selec2;
+	public static Scene escenaDisp() {
+		VBox general = new VBox();
+			HBox panel = new HBox();
+				TableView<Habitacion> tabla = new TableView<>();
+					TableColumn<Habitacion,Integer> c0 = new TableColumn<>("Numero");
+					c0.setCellValueFactory(new PropertyValueFactory<>("n"));
+					TableColumn<Habitacion,String> c1 = new TableColumn<>("Tamano");
+					c1.setCellValueFactory(new PropertyValueFactory<>("tamano"));
+					TableColumn<Habitacion,String> c2 = new TableColumn<>("Cuidados");
+					c2.setCellValueFactory(new PropertyValueFactory<>("peligrosidad"));
+					TableColumn<Habitacion,Boolean> c3 = new TableColumn<>("Esta ocupada");
+					c3.setCellValueFactory(new PropertyValueFactory<>("ocupada"));
+				tabla.getColumns().addAll(c0,c1,c2,c3);
+				Scanner sacar = new Scanner(Archivo.leer(habitaciones, true));
+				int lineas = 0;
+					while(!Archivo.leer(habitaciones, true).equals("") && sacar.hasNextLine()){
+						String[] info = sacar.nextLine().split(";");
+						tabla.getItems().addAll(new Habitacion(lineas,info[0],info[1],Boolean.parseBoolean(info[2])));
+						lineas++;
+					}
+				sacar.close();
+				Label txteliminarlinea = new Label("Ingrese la linea que desea eliminar: ");
+				HBox eliminarlinea = new HBox();
+					Button eliminar = new Button("Eliminar linea");
+					Spinner<Integer> lineaborrar = new Spinner<Integer>();
+					if(lineas-1 == -1){
+						lineas = 1;
+						eliminar.setDisable(true);
+						lineaborrar.setDisable(true);
+						txteliminarlinea.setText("No hay lineas para eliminar");
+					}
+					tabla.setOnMouseClicked(e->{
+						selec2 = tabla.getSelectionModel().getSelectedItem();
+						disp_window.setScene(escenaDisp());
+					});
+					SpinnerValueFactory<Integer> valores = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, lineas-1,0);
+					lineaborrar.setValueFactory(valores);
+					lineaborrar.setEditable(false);
+						eliminar.setOnAction(e->{
+							if(Alert.display("Alerta", "¿Seguro que desea borrar esta linea?","Si","No")){
+								int l = 0;
+								Scanner leyendo = new Scanner(Archivo.leer(habitaciones,true));
+								String nuevo = "";
+								while(leyendo.hasNextLine()){
+									System.out.println("lineas: "+ l +"    spiner: " + lineaborrar.getValue());
+									if(l!=lineaborrar.getValue()) nuevo+= leyendo.nextLine()+"\n";
+									else leyendo.nextLine();
+									l++;
+								}
+								Archivo.sobreescribir(habitaciones, nuevo);
+								disp_window.setScene(escenaDisp());
+								leyendo.close();
+							}
+						});
+
+					eliminarlinea.getChildren().addAll(lineaborrar,eliminar);
+				Label txtlimpiar = new Label("Presione el boton para limpiar los datos");
+				Button limpiar = new Button("Limpiar");
+					limpiar.setOnAction(e->{
+						if(Alert.display("Alerta", "¿Seguro que desea limpiar los datos","Si","No")){
+							Archivo.sobreescribir(habitaciones,"");
+							disp_window.setScene(escenaDisp());
+						}
+					});
+				Label txtborrar = new Label("Presione el boton de abajo para borrar el archivo");
+				Button borrar = new Button("Borrar");
+					borrar.setOnAction(e->{
+						if(Alert.display("Confirmacion", "¿Seguro que desea borrar el archivo de habitaciones?","Si","No")){
+							Archivo.eleminar(habitaciones);
+							disp_window.setScene(escenaDisp());
+						}
+					});
+				Label txtcrear = new Label("Crear un archivo nuevo");
+				Button crear = new Button("Crear");
+					crear.setOnAction(e->{
+						if(Alert.display("Confirmacion", "¿Seguro que desea crear un nuevo archivo de habitaciones?","Si","No")){
+							Archivo.crear("Datos/habitaciones.txt");
+							disp_window.setScene(escenaDisp());
+						}
+					});
+				VBox opciones = new VBox();
+					VBox caja1 = new VBox();
+					caja1.getChildren().addAll(txteliminarlinea,eliminarlinea);
+					VBox caja2 = new VBox();
+					caja2.getChildren().addAll(txtlimpiar,limpiar);
+					VBox caja3 = new VBox();
+					caja3.getChildren().addAll(txtborrar,borrar);
+					VBox caja4= new VBox();
+					caja4.getChildren().addAll(txtcrear,crear);
+					opciones.getChildren().addAll(caja1,caja2,caja3,caja4);
+					opciones.setSpacing(50);
+					txteliminarlinea.setAlignment(Pos.BOTTOM_LEFT);
+					txtlimpiar.setAlignment(Pos.BOTTOM_LEFT);
+					txtborrar.setAlignment(Pos.BOTTOM_LEFT);
+					VBox.setVgrow(txteliminarlinea, Priority.ALWAYS);
+					VBox.setVgrow(txtlimpiar, Priority.ALWAYS);
+					VBox.setVgrow(txtborrar, Priority.ALWAYS);
+				panel.getChildren().addAll(tabla,opciones);
+				panel.setSpacing(10);
+			tabla.setMaxSize(500,400);
+			HBox nuevalinea = new HBox();
+				Label txtnueva = new Label("Insertar nueva linea: ");
+				ChoiceBox<String> tam = new ChoiceBox<String>();  
+				tam.getItems().add("Muy pequeno");
+				tam.getItems().add("Pequeno");
+				tam.getItems().add("Mediano");
+				tam.getItems().add("Grande");
+				tam.getItems().add("Muy grande");
+				tam.setValue("Muy pequeno");
+				ChoiceBox<String> cuidados = new ChoiceBox<String>(); 
+				cuidados.getItems().addAll("Domestico","Peligroso");
+				cuidados.setValue("Domestico");
+				CheckBox ocupada = new CheckBox("Ocupada");
+				Button insertar = new Button("Insertar");
+					insertar.setOnAction(e->{
+						if(habitaciones.exists()) Archivo.escribir(habitaciones, ""+tam.getValue()+";"+cuidados.getValue()+";"+ocupada.isSelected()+"\n");
+						disp_window.setScene(escenaDisp());
+					});
+				nuevalinea.getChildren().addAll(txtnueva,tam,cuidados,ocupada,insertar);
+				
+			general.getChildren().addAll(panel,nuevalinea);
+			general.setSpacing(15);
+			general.setPadding(new Insets(5,5,5,5));
+			
+		return new Scene(general);
 	}
 	public static Reserva selected;
 	public static Scene escenaVer(){
@@ -133,7 +282,7 @@ public class Hotel extends Application{
 				botones.setSpacing(5);
 				botones.setAlignment(Pos.BOTTOM_RIGHT);
 				TableView<Reserva> tabla = new TableView<>();
-					TableColumn<Reserva,Object> c0 = new TableColumn<>("Linea");
+					TableColumn<Reserva,Integer> c0 = new TableColumn<>("Linea");
 					c0.setCellValueFactory(new PropertyValueFactory<>("linea"));
 					TableColumn<Reserva,String> c1 = new TableColumn<>("Nombre");
 					c1.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -146,7 +295,7 @@ public class Hotel extends Application{
 					TableColumn<Reserva, String> c5 = new TableColumn<>("Direccion");
 					c5.setCellValueFactory(new PropertyValueFactory<>("Direccion"));
 					
-					TableColumn<Reserva, Object> c6 = new TableColumn<>("ID Reserva");
+					TableColumn<Reserva, Integer> c6 = new TableColumn<>("ID Reserva");
 					c6.setCellValueFactory(new PropertyValueFactory<>("id"));
 					TableColumn<Reserva, String> c7 = new TableColumn<>("Nombre Reserva");
 					c7.setCellValueFactory(new PropertyValueFactory<>("mnombre"));
@@ -156,9 +305,9 @@ public class Hotel extends Application{
 					c9.setCellValueFactory(new PropertyValueFactory<>("raza"));
 					TableColumn<Reserva, String> c10 = new TableColumn<>("Sexo");
 					c10.setCellValueFactory(new PropertyValueFactory<>("sexo"));
-					TableColumn<Reserva, Object> c16 = new TableColumn<>("Edad");
+					TableColumn<Reserva, Integer> c16 = new TableColumn<>("Edad");
 					c16.setCellValueFactory(new PropertyValueFactory<>("edad"));
-					TableColumn<Reserva, Object> c17 = new TableColumn<>("Meses");
+					TableColumn<Reserva, Integer> c17 = new TableColumn<>("Meses");
 					c17.setCellValueFactory(new PropertyValueFactory<>("meses"));
 					TableColumn<Reserva, LocalDate> c11 = new TableColumn<>("Desde la fecha");
 					c11.setCellValueFactory(new PropertyValueFactory<>("desde"));
@@ -168,7 +317,7 @@ public class Hotel extends Application{
 					c13.setCellValueFactory(new PropertyValueFactory<>("tamano"));
 					TableColumn<Reserva, String> c14 = new TableColumn<>("Peligrosidad");
 					c14.setCellValueFactory(new PropertyValueFactory<>("peligrosidad"));
-					TableColumn<Reserva, Object> c15 = new TableColumn<>("Es exotico");
+					TableColumn<Reserva, Integer> c15 = new TableColumn<>("Es exotico");
 					c15.setCellValueFactory(new PropertyValueFactory<>("exotico"));
 					tabla.getColumns().addAll(c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c16,c17,c11,c12,c13,c14,c15);
 					
@@ -271,7 +420,8 @@ public class Hotel extends Application{
 		general.getChildren().addAll(panel,botones);
 		general.setPadding(new Insets(10,10,10,10));
 		return new Scene(general);
-	}	
+	}
+	public static boolean cambiar = false;
 	public static Scene escenaDatos() throws Exception {
 		//Datos cliente
 		nombre = new TextField();
@@ -415,6 +565,7 @@ public class Hotel extends Application{
 				else{
 					int idput = cliente.encontrarMascota(pageIndex);
 					if(idput!= -1){
+						cambiar = false;
 						reserva_window.setScene(escenaReservar(idput));
 						reserva_window.show();
 					}
@@ -473,7 +624,6 @@ public class Hotel extends Application{
 	public static ChoiceBox<String> tamano;
 	public static ChoiceBox<String> peligro;
 	public static CheckBox exotico;
-	public static boolean cambiar = false;
 	public static Scene escenaReservar(int id){
 		Mascota mascota = cliente.getMascotas()[id];
 		GridPane panel = new GridPane();
@@ -527,8 +677,8 @@ public class Hotel extends Application{
 					Label txttamano = new Label("Tamaño:\t\t");
 					tamano = new ChoiceBox<String>();
 					tamano.setValue(mascota.getTamano());
-					tamano.getItems().add("Muy pequeño");
-					tamano.getItems().add("Pequeño");
+					tamano.getItems().add("Muy pequeno");
+					tamano.getItems().add("Pequeno");
 					tamano.getItems().add("Mediano");
 					tamano.getItems().add("Grande");
 					tamano.getItems().add("Muy grande");
@@ -586,10 +736,13 @@ public class Hotel extends Application{
 		Button reservar = new Button("Reservar");
 		reservar.setOnAction(e->{
 			if(!cambiar){
-				String reservacion = cliente.toString()+"~"+cliente.getMascotas()[id].toString()+"\n";
-				Archivo.escribir(reservas, reservacion);
-				System.out.println("Ha reservado correctamente");
-				cambiar = true;
+				if(Datos.disponibilidad(cliente.getMascotas()[id])){
+					String reservacion = cliente.toString()+"~"+cliente.getMascotas()[id].toString()+"\n";
+					Archivo.escribir(reservas, reservacion);
+					System.out.println("Ha reservado correctamente");
+					cambiar = true;
+				}
+				else Alert.display("Error",Datos.razon, "Ok");
 			}
 			else if(Alert.display("Alerta", "¿Desea cambiar la reserva de esta mascota?", "Si", "No")){
 				Scanner leyendo = new Scanner(Archivo.leer(reservas,true));

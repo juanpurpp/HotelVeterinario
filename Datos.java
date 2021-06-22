@@ -71,17 +71,16 @@ public class Datos{
 		}
 		return true;
 	}
-	/*
-	public static boolean comprobarFinal(Mascota comprobando){
-		if(comprobando.getTamano().trim().length()==0){
-			razon = "No puede dejar vacio el campo sexo";
+	
+	public static boolean disponibilidad(Mascota comprobando){
+		if(Archivo.leer(Hotel.habitaciones,true).contains(""+comprobando.getTamano()+";"+comprobando.getPeligrosidad()+";"+false)){
+			Archivo.sobreescribir(Hotel.habitaciones,Archivo.leer(Hotel.habitaciones,true).replaceFirst(//
+				comprobando.getTamano()+";"+comprobando.getPeligrosidad()+";"+false,comprobando.getTamano()+";"+comprobando.getPeligrosidad()+";"+true));
+			return true;
+		}
+		else{
+			razon = "Lo sentimos!, no hay habitaciones disponibles \npara "+comprobando.getPeligrosidad()+" y "+comprobando.getTamano() +"vayase.";
 			return false;
 		}
-		if(comprobando.getEx().trim().length()==0){
-			razon = "No puede dejar vacio el campo sexo";
-			return false;
-		}
-		return true;
 	}
-	*/
 }

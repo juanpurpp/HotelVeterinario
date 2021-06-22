@@ -1,0 +1,2 @@
+Muy pequeno;Domestico;true
+Muy pequeno;Peligroso;true
