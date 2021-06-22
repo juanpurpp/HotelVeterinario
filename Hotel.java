@@ -47,6 +47,7 @@ public class Hotel extends Application{
 	public static Stage disp_window = new Stage();
 
 	public static File css_pestana = Archivo.crear("CSS/pestana.txt");
+	public static File animales = Archivo.crear("Datos/animales");
 	public static File reservas = Archivo.crear("Datos/reservas.txt");
 	public static File habitaciones = Archivo.crear("Datos/habitaciones.txt");
 	public static Button pestana1;
@@ -57,7 +58,6 @@ public class Hotel extends Application{
 	}
 	@Override
 	public void start(Stage primaryStage) throws Exception{
-		
 		datos_window.setResizable(false);
 		reserva_window.setResizable(false);
 		ver_window.setResizable(false);
@@ -65,24 +65,38 @@ public class Hotel extends Application{
 		primaryStage.getIcons().add(new Image("file:Imagenes/icon.png"));
 		vprincipal = primaryStage;
 		VBox box = new VBox();
-		Label titulo = new Label("Hotel Veterinario");
-		titulo.setFont(new Font("Calibri", 35));
+		//Label titulo = new Label("Hotel Veterinario");
+		//titulo.setFont(new Font("Arial",35));
+		DropShadow shadow = new DropShadow();
+        shadow.setOffsetY(2.0);
+        shadow.setOffsetX(2.0);
+        shadow.setColor(Color.BLACK);
+ 
+        Text titulo = new Text();
+        titulo.setEffect(shadow);
+        titulo.setText("Hotel Veterinario");
+        titulo.setFill(Color.WHITE);
+        titulo.setFont(Font.font("Calibri", FontWeight.BOLD, 40));
 		VBox botonesp = new VBox();
 		GridPane panel = new GridPane();
 			panel.setPadding(new Insets(50, 25, 50, 25));
 			panel.setVgap(25);
 			panel.setHgap(200);
 			Button b1 = new Button("Reservar");
+			b1.setStyle("-fx-border-width: 3px;-fx-border-style: solid;-fx-border-color: #2469A0;");
 			Button b2 = new Button("Ver reservas");
+			b2.setStyle("-fx-border-width: 3px;-fx-border-style: solid;-fx-border-color: #2469A0;");
 			botonesp.getChildren().addAll(b1,b2);
 			botonesp.minWidth(400);
 			botonesp.setSpacing(10);
 			Button b3 = new Button("Editar disponibilidad de habitaciones");
+			b3.setStyle("-fx-border-width: 3px;-fx-border-style: solid;-fx-border-color: #2469A0;");
 			Image relax = new Image("Imagenes/relax.jpg",275,250,false,true);
 			DropShadow ds = new DropShadow();
 			ds.setOffsetY(1.0);
 			ds.setOffsetX(0.5);
 			ds.setColor(Color.GRAY);
+
 			ImageView verrelax= new ImageView(relax);
 			verrelax.setEffect(ds);
 			GridPane.setConstraints(botonesp, 0,0);
@@ -140,9 +154,11 @@ public class Hotel extends Application{
 		});
 		box.getChildren().addAll(titulo,finalbox);
 		box.setAlignment(Pos.TOP_CENTER);
+		box.setBackground(new Background(new BackgroundFill(Color.valueOf("7de3e0"),CornerRadii.EMPTY, Insets.EMPTY)));
 		Scene escena = new Scene(box);
-		//escena.setFill(Color.valueOf("#2469AO"));
+		
 		primaryStage.setScene(escena);
+		
 		primaryStage.setTitle("Hotel Veterinario");
 		primaryStage.show();
 		// termino ventana principal
@@ -271,6 +287,7 @@ public class Hotel extends Application{
 			general.getChildren().addAll(panel,nuevalinea);
 			general.setSpacing(15);
 			general.setPadding(new Insets(5,5,5,5));
+			general.setBackground(new Background(new BackgroundFill(Color.valueOf("#7de3e0"),CornerRadii.EMPTY, Insets.EMPTY)));
 			
 		return new Scene(general);
 	}
@@ -421,6 +438,8 @@ public class Hotel extends Application{
 				HBox.setHgrow(txtborrar, Priority.ALWAYS);
 		general.getChildren().addAll(panel,botones);
 		general.setPadding(new Insets(10,10,10,10));
+		general.setBackground(new Background(new BackgroundFill(Color.valueOf("#7de3e0"),CornerRadii.EMPTY, Insets.EMPTY)));
+		
 		return new Scene(general);
 	}
 	public static boolean cambiar = false;
@@ -618,6 +637,8 @@ public class Hotel extends Application{
 		tab1.setClosable(false);
 		tab2.setClosable(false);
 		tabs.getTabs().addAll(tab1,tab2);
+		tabs.setBackground(new Background(new BackgroundFill(Color.valueOf("#7de3e0"),CornerRadii.EMPTY, Insets.EMPTY)));
+
 		//Datos escritorMascotas
 		return new Scene(tabs);
 	}
@@ -760,6 +781,8 @@ public class Hotel extends Application{
 		VBox general = new VBox();
 		general.getChildren().addAll(panel,botones);
 		general.setPadding(new Insets(5,5,5,5));
+		general.setBackground(new Background(new BackgroundFill(Color.valueOf("#7de3e0"),CornerRadii.EMPTY, Insets.EMPTY)));
+
 		return new Scene(general);
 	}
 }

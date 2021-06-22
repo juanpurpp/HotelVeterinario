@@ -1,2 +1,4 @@
 Muy pequeno;Domestico;true
 Muy pequeno;Peligroso;true
+Pequeno;Domestico;false
+Grande;Domestico;false
