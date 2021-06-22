@@ -57,6 +57,7 @@ public class Hotel extends Application{
 	}
 	@Override
 	public void start(Stage primaryStage) throws Exception{
+		
 		datos_window.setResizable(false);
 		reserva_window.setResizable(false);
 		ver_window.setResizable(false);
@@ -140,6 +141,7 @@ public class Hotel extends Application{
 		box.getChildren().addAll(titulo,finalbox);
 		box.setAlignment(Pos.TOP_CENTER);
 		Scene escena = new Scene(box);
+		//escena.setFill(Color.valueOf("#2469AO"));
 		primaryStage.setScene(escena);
 		primaryStage.setTitle("Hotel Veterinario");
 		primaryStage.show();
